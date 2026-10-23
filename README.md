@@ -3,6 +3,27 @@
 Reconstrucción local en browser de **Counter-Strike 1.6** con identidad propia:
 **DEUSHIMA STRIKE**. Usa los assets reales de la instalación GoldSrc, un menú con
 arte original, HUD clásico, armas originales, duelos 1v1 rápidos y un mapa de surf.
+## GitHub Pages — versión pública y vista previa
+
+El build de Pages se publica desde la rama `fix/github-pages-stable-20261023`; la rama `main` conserva el código original.
+
+Para generar el mismo sitio localmente:
+
+```powershell
+npm run build:pages
+npm run preview:pages
+```
+
+Vista previa: http://localhost:4173/DEUSHIMA.STRIKE/ . El servidor solo acepta conexiones del propio equipo, usa las rutas reales de Pages y no abre el navegador. La versión estática no incluye contenido GoldSrc original; emplea materiales, armas y sonidos procedurales.
+
+### Online 1v1
+
+El modo online usa PeerJS para registrar la sala en un servidor externo y WebRTC para transmitir la partida entre host e invitado. Ambos jugadores deben contar con conexión a Internet. El anfitrión elige **ONLINE 1V1 → CREAR SALA** y comparte el código o el enlace; el invitado elige **UNIRSE**, introduce el código y ambos marcan **LISTO**. El host elige el mapa antes de que ambos estén listos.
+
+En una misma PC se puede probar con dos instancias independientes sobre `localhost`. Para invitar a otro equipo, se comparte la URL pública de Pages; los enlaces generados desde la vista previa local también apuntan a la publicación HTTPS para no enviar al invitado a su propio `localhost`.
+
+El servicio de señalización no aloja partidas. Si la red de uno de los jugadores bloquea conexiones WebRTC directas (por ejemplo, algunos NAT simétricos, redes corporativas o firewalls), un servidor TURN con credenciales válidas sería necesario para garantizar conectividad; no se incluyen servidores TURN públicos sin control ni credenciales en el repositorio.
+
 
 ![Menú DEUSHIMA STRIKE](screenshots/deushima-menu.png)
 

@@ -9,6 +9,8 @@
     "dev": "node server.mjs",
     "test": "node tests/assets-check.mjs && node tests/duel-logic.test.mjs && node tests/redline-map.test.mjs",
     "test:online": "node tests/online-e2e.mjs",
+    "build:pages": "node scripts/build-static.mjs && node scripts/build-pages.mjs && node scripts/check-pages.mjs && node --experimental-vm-modules scripts/link-pages.mjs",
+    "preview:pages": "node scripts/serve-pages.mjs",
     "build:static": "node scripts/build-static.mjs",
     "deploy": "node scripts/build-static.mjs && node scripts/deploy-vercel.mjs",
     "extract": "python tools/extract-assets.py && python tools/convert-smds.py && python tools/fix-hud-alpha.py"

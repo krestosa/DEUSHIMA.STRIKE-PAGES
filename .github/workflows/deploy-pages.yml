@@ -1,0 +1,51 @@
+name: Deploy DEUSHIMA STRIKE GitHub Pages
+on:
+  push:
+    branches:
+      - fix/github-pages-stable-20261023
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: deushima-github-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+      - name: Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build public website
+        env:
+          GITHUB_PAGES_BASE_PATH: /${{ github.event.repository.name }}/
+        run: |
+          node scripts/build-static.mjs
+          node scripts/build-pages.mjs
+          node scripts/check-pages.mjs
+          node --experimental-vm-modules scripts/link-pages.mjs
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Upload audited website
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: ./dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4

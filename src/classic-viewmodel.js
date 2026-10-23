@@ -6,7 +6,7 @@
  * ajusta por categoría. Las animaciones por hueso no se usan; el retroceso,
  * el bob y el reload se animan proceduralmente sobre el grupo.
  */
-import * as THREE from '../../vendor/three.module.js';
+import * as THREE from '../vendor/three.module.js';
 
 window.__THREE__ = THREE;
 

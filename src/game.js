@@ -144,7 +144,7 @@ export class Game {
     this.renderer.setSize(window.innerWidth, window.innerHeight, false);
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 1.08;
+    this.renderer.toneMappingExposure = 1.18;
     this.renderer.shadowMap.enabled = false;
     this.renderer.autoClear = true;
 
@@ -317,7 +317,7 @@ export class Game {
       this.input.requestPointerLock();
       this._lockHintShown = false;
       this.ui.showCenterMessage?.(
-        payload.role === 'host' ? 'SOS EL HOST Ãƒâ€šÃ‚Â· PRIMERO A 10 RONDAS' : 'PRIMERO A 10 RONDAS',
+        payload.role === 'host' ? `SOS EL HOST · PRIMERO A ${payload.targetKills || 13} RONDAS` : `PRIMERO A ${payload.targetKills || 13} RONDAS`,
         2600,
       );
     } catch (err) {
@@ -458,6 +458,8 @@ export class Game {
 
   applyMapEnvironment(map) {
     const amb = map.ambient || {};
+    // Cada mapa puede calibrar su exposición sin alterar los exteriores.
+    this.renderer.toneMappingExposure = Number.isFinite(amb.exposure) ? amb.exposure : 1.18;
     this.scene.background = new THREE.Color(amb.skyBottom || 0x8aa0a8);
     this.scene.fog = new THREE.Fog(
       amb.fog ?? 0x9a8d6e,

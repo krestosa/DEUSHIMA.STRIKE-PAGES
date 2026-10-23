@@ -167,10 +167,18 @@ export class Input {
     if (!this.canvas || this.locked) return;
     try {
       const p = this.canvas.requestPointerLock({ unadjustedMovement: true });
-      if (p && p.catch) p.catch(() => this.canvas.requestPointerLock());
+      if (p && typeof p.catch === 'function') {
+        p.catch(() => {
+          try {
+            const fallback = this.canvas.requestPointerLock();
+            fallback?.catch?.(() => { /* Requiere un clic del jugador; no es un error fatal. */ });
+          } catch { /* El jugador podrá hacer clic para capturar el mouse. */ }
+        });
+      }
     } catch {
       try {
-        this.canvas.requestPointerLock();
+        const fallback = this.canvas.requestPointerLock();
+        fallback?.catch?.(() => { /* Requiere interacción del jugador. */ });
       } catch {
         /* ignore */
       }

@@ -89,24 +89,28 @@ const MAP_TEXTURES = {
 const cache = new Map();
 let loaded = false;
 
-function loadOne(rel) {
-  if (cache.has(rel)) return cache.get(rel);
-  const tex = new THREE.TextureLoader().load(
-    `${BASE}/${rel}`,
-    (t) => {
-      t.colorSpace = THREE.SRGBColorSpace;
-      t.wrapS = THREE.RepeatWrapping;
-      t.wrapT = THREE.RepeatWrapping;
-      t.magFilter = THREE.LinearFilter;
-      t.minFilter = THREE.LinearMipmapLinearFilter;
-      t.anisotropy = 4;
-      t.needsUpdate = true;
-    },
-    undefined,
-    () => console.warn('[wad] no se pudo cargar', rel),
-  );
-  cache.set(rel, tex);
-  return tex;
+async function loadOne(rel) {
+  // TextureLoader.load() devuelve una textura aun si la imagen da 404.
+  // Guardarla antes de validar provoca materiales negros en MeshStandardMaterial.
+  try {
+    const texture = await new THREE.TextureLoader().loadAsync(`${BASE}/${rel}`);
+    if (!texture.image?.width || !texture.image?.height) {
+      texture.dispose();
+      return false;
+    }
+    texture.colorSpace = THREE.SRGBColorSpace;
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    texture.magFilter = THREE.LinearFilter;
+    texture.minFilter = THREE.LinearMipmapLinearFilter;
+    texture.anisotropy = 4;
+    texture.needsUpdate = true;
+    cache.set(rel, texture);
+    return true;
+  } catch {
+    // Sin textura GoldSrc válida, se conserva la procedural.
+    return false;
+  }
 }
 
 export async function preloadWadTextures() {
@@ -116,19 +120,8 @@ export async function preloadWadTextures() {
   for (const map of Object.values(MAP_TEXTURES)) {
     for (const rel of Object.values(map)) all.add(rel);
   }
-  await Promise.all([...all].map(async (rel) => {
-    try {
-      const tex = loadOne(rel);
-      await new Promise((resolve) => {
-        if (tex.image?.width) return resolve();
-        tex.addEventListener?.('load', resolve, { once: true });
-        setTimeout(resolve, 4000);
-      });
-    } catch {
-      /* ignore */
-    }
-  }));
-  console.info(`[wad] ${cache.size} texturas originales listas`);
+  const results = await Promise.all([...all].map(loadOne));
+  console.info(`[wad] ${cache.size} listas, ${results.filter((success) => !success).length} ausentes: fallback procedural`);
 }
 
 export function wadTextureFor(mapId, key) {

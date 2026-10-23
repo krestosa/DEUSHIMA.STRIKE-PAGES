@@ -81,7 +81,7 @@ export class AudioEngine {
     this.ready = false;
     this._buffers = new Map();
     this._loading = new Set();
-    this._samplesEnabled = true;
+    this._samplesEnabled = !globalThis.__DEUSHIMA_PUBLIC__;
   }
 
   _samplePathFor(name, opts = {}) {

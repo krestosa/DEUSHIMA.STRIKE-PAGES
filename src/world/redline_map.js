@@ -235,9 +235,9 @@ export function buildRedlineMap(game) {
   try {
     buildRoom(b);
     b.addEnvironment({
-      hemiColor: 0xdce4ec, hemiGround: 0x88837c, hemiIntensity: .95,
-      sunColor: 0xffffff, sunIntensity: .55, ambientColor: 0xc6c6c1,
-      ambientIntensity: .46, sunDir: { x: .15, y: .9, z: -.1 },
+      hemiColor: 0xdce4ec, hemiGround: 0x88837c, hemiIntensity: 1.12,
+      sunColor: 0xffffff, sunIntensity: 0.8, ambientColor: 0xc6c6c1,
+      ambientIntensity: 0.72, sunDir: { x: .15, y: .9, z: -.1 },
     });
     b.finalize();
     const spawns = {
@@ -251,7 +251,7 @@ export function buildRedlineMap(game) {
     const waypoints = makeWaypoints(b);
     data = {
       ...REDLINE_INFO, bounds: B,
-      ambient: { fog: 0xb7b5af, fogNear: 35, fogFar: 92 },
+      ambient: { fog: 0xb7b5af, fogNear: 35, fogFar: 92, exposure: 1.38 },
       root: b.root, colliders: b.colliders, spawns, waypoints,
       buyZones: { CT: { min: { x: -12, z: 14 }, max: { x: 12, z: 18 } },
         T: { min: { x: -12, z: -18 }, max: { x: 12, z: -14 } } },

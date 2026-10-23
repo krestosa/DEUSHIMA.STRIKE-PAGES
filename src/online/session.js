@@ -101,9 +101,16 @@ function randomCode() {
 
 function makeLink(code) {
   const loc = typeof globalThis !== 'undefined' ? globalThis.location : null;
-  if (!loc || !loc.origin) return '';
-  const path = loc.pathname || '/';
-  return `${loc.origin}${path}${path.includes('?') ? '&' : '?'}join=${code}`;
+  if (!loc?.origin) return '';
+  // Desde localhost se comparte la web HTTPS pública: localhost solo
+  // apunta a la PC del anfitrión, nunca a la de su invitado remoto.
+  const localPreview = globalThis.__DEUSHIMA_PUBLIC__ &&
+    ['localhost', '127.0.0.1'].includes(loc.hostname);
+  const url = new URL(localPreview
+    ? 'https://deushima.github.io/DEUSHIMA.STRIKE/'
+    : loc.origin + (loc.pathname || '/'));
+  url.searchParams.set('join', code);
+  return url.toString();
 }
 
 function makeLobby(code, hostName, guest) {
@@ -593,6 +600,7 @@ export class OnlineSession {
         clearTimeout(timer);
         try {
           peer.off?.('open', onOpen);
+          peer.off?.('error', onError);
         } catch {
           /* ignore */
         }

@@ -49,6 +49,35 @@
         </div>
       </div>
     </div>
+    <script>
+      // Los errores de descarga/importación ocurren antes de que arranque main.js.
+      (() => {
+        const showBootError = (message) => {
+          const label = document.querySelector('#boot-screen .boot-inner p');
+          if (!label) return;
+          label.textContent = message;
+          label.style.color = '#f2a6a1';
+          label.dataset.failed = '1';
+        };
+        window.addEventListener('error', (event) => {
+          const source = event.target?.src || event.target?.href;
+          if (source) {
+            showBootError('No se pudo cargar un recurso del juego: ' + source);
+          } else if (event.message) {
+            showBootError('Error de inicio: ' + event.message);
+          }
+        }, true);
+        window.addEventListener('unhandledrejection', (event) => {
+          showBootError('Error del motor: ' + (event.reason?.message || 'desconocido'));
+        });
+        setTimeout(() => {
+          const label = document.querySelector('#boot-screen .boot-inner p');
+          if (label && !label.dataset.failed) {
+            showBootError('El motor no terminó de arrancar. Recargá la página; si persiste, revisá la consola.');
+          }
+        }, 20000);
+      })();
+    </script>
     <script type="importmap">
       { "imports": { "three": "/vendor/three.module.js" } }
     </script>
