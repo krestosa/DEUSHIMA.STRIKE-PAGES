@@ -2,6 +2,34 @@
 <html lang="es">
   <head>
     <meta charset="utf-8" />
+    <script>
+      // Protección desde el arranque; no depende del estado del juego.
+      // El navegador puede interceptar Ctrl+W antes de enviarlo a JavaScript.
+      (() => {
+        const closesTab = (event) => (event.ctrlKey || event.metaKey) &&
+          (event.code === 'KeyW' || String(event.key || '').toLowerCase() === 'w');
+        const protect = (event) => {
+          if (closesTab(event)) event.preventDefault();
+          // Deja pasar Ctrl+W a los controles del juego (agacharse + avanzar).
+        };
+        window.addEventListener('keydown', protect, true);
+        window.addEventListener('keyup', protect, true);
+        // Intento adicional fuera de pantalla completa donde Keyboard Lock
+        // esté permitido; el rechazo es normal en muchos navegadores.
+        const requestLock = () => {
+          if (document.fullscreenElement || !navigator.keyboard?.lock) return;
+          try { Promise.resolve(navigator.keyboard.lock(['KeyW'])).catch(() => {}); }
+          catch { /* sin soporte o permiso */ }
+        };
+        window.addEventListener('pointerdown', requestLock, { once: true, capture: true });
+        // Si la combinación queda reservada por el navegador, beforeunload
+        // puede presentar la confirmación nativa tras una interacción real.
+        window.addEventListener('beforeunload', (event) => {
+          event.preventDefault();
+          event.returnValue = true;
+        });
+      })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
     <meta name="theme-color" content="#0b0e0d" />
     <title>DEUSHIMA STRIKE</title>
