@@ -5,7 +5,7 @@ Reconstrucción local en browser de **Counter-Strike 1.6** con identidad propia:
 arte original, HUD clásico, armas originales, duelos 1v1 rápidos y un mapa de surf.
 ## GitHub Pages — versión pública y vista previa
 
-El build de Pages se publica desde la rama `fix/github-pages-stable-20261023`; la rama `main` conserva el código original.
+El build de Pages se publica desde la rama `fix/github-pages-stable-20261023` en el repositorio [`krestosa/DEUSHIMA.STRIKE-PAGES`](https://github.com/krestosa/DEUSHIMA.STRIKE-PAGES). El repositorio de origen se mantiene sin modificaciones.
 
 Para generar el mismo sitio localmente:
 
@@ -14,7 +14,7 @@ npm run build:pages
 npm run preview:pages
 ```
 
-Vista previa: http://localhost:4173/DEUSHIMA.STRIKE/ . El servidor solo acepta conexiones del propio equipo, usa las rutas reales de Pages y no abre el navegador. La versión estática no incluye contenido GoldSrc original; emplea materiales, armas y sonidos procedurales.
+Vista previa: http://localhost:4173/DEUSHIMA.STRIKE-PAGES/ . El servidor solo acepta conexiones del propio equipo, usa las rutas reales de Pages y no abre el navegador. La versión estática no incluye contenido GoldSrc original; emplea materiales, armas y sonidos procedurales.
 
 ### Online 1v1
 

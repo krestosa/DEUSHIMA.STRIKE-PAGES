@@ -107,7 +107,7 @@ function makeLink(code) {
   const localPreview = globalThis.__DEUSHIMA_PUBLIC__ &&
     ['localhost', '127.0.0.1'].includes(loc.hostname);
   const url = new URL(localPreview
-    ? 'https://deushima.github.io/DEUSHIMA.STRIKE/'
+    ? 'https://krestosa.github.io/DEUSHIMA.STRIKE-PAGES/'
     : loc.origin + (loc.pathname || '/'));
   url.searchParams.set('join', code);
   return url.toString();

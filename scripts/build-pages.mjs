@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const dist = path.join(root, 'dist');
-const siteBase = process.env.GITHUB_PAGES_BASE_PATH || '/DEUSHIMA.STRIKE/';
+const siteBase = process.env.GITHUB_PAGES_BASE_PATH || '/DEUSHIMA.STRIKE-PAGES/';
 if (!/^\/(?:[a-zA-Z0-9._~-]+\/)+$/.test(siteBase)) throw new Error('Invalid repository Pages base path');
 if (!fs.existsSync(path.join(dist, 'index.html'))) throw new Error('Run node scripts/build-static.mjs first');
 

@@ -5,7 +5,7 @@ import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 'dist');
-const siteBase = process.env.GITHUB_PAGES_BASE_PATH || '/DEUSHIMA.STRIKE/';
+const siteBase = process.env.GITHUB_PAGES_BASE_PATH || '/DEUSHIMA.STRIKE-PAGES/';
 const errors = [];
 const files = [];
 function walk(dir) {

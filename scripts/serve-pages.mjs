@@ -9,7 +9,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 'dist');
-const prefix = process.env.GITHUB_PAGES_BASE_PATH || '/DEUSHIMA.STRIKE/';
+const prefix = process.env.GITHUB_PAGES_BASE_PATH || '/DEUSHIMA.STRIKE-PAGES/';
 const host = '127.0.0.1';
 const port = Number(process.env.GITHUB_PAGES_PREVIEW_PORT || 4173);
 if (!/^\/(?:[A-Za-z0-9._~-]+\/)+$/.test(prefix)) throw new Error('Invalid base path');
