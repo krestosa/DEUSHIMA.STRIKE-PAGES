@@ -433,7 +433,7 @@ class ClassicMenu {
         <div class="cm-sub"><b>1.6</b><span>GOLDSRC | BROWSER EDITION</span></div>
         <div class="cm-rule"></div>
       </div>
-      <button class="cm-fullscreen" data-cm="fullscreen" type="button" title="Pantalla completa">
+      <button class="cm-fullscreen" data-cm="fullscreen" type="button" title="Pantalla completa · protege Ctrl+W si el navegador lo admite">
         <span class="cm-fs-icon">⛶</span><span class="cm-fs-label">PANTALLA COMPLETA</span>
       </button>
       <nav class="cm-nav" aria-label="Men principal">
@@ -500,23 +500,33 @@ class ClassicMenu {
     if (auto === 'surf') setTimeout(() => this._startSurf(), 700);
     if (auto === 'bomb') setTimeout(() => this._startBomb(), 700);
   }
-  _toggleFullscreen() {
+  async _toggleFullscreen() {
     if (document.fullscreenElement) {
-      document.exitFullscreen?.().catch(() => {});
+      try { await document.exitFullscreen?.(); } catch { /* ignore */ }
       return;
     }
     const el = document.documentElement;
-    el.requestFullscreen?.({ navigationUI: 'hide' })
-      .then(() => this._syncFullscreen())
-      .catch(() => {
-        // Si el navegador lo bloquea, intentar sin opciones.
-        el.requestFullscreen?.().then(() => this._syncFullscreen()).catch(() => {});
-      });
+    try {
+      // Browsers with fullscreen keyboardLock can forward reserved shortcuts.
+      await el.requestFullscreen({ navigationUI: 'hide', keyboardLock: 'browser' });
+    } catch {
+      try { await el.requestFullscreen(); } catch { return; }
+    }
+    if (document.fullscreenElement && navigator.keyboard?.lock) {
+      try {
+        // Captures Ctrl+W as well as W on Chromium-based browsers.
+        await navigator.keyboard.lock(['KeyW']);
+      } catch {
+        // Unsupported or denied: keep ordinary fullscreen and unload guard.
+      }
+    }
+    this._syncFullscreen();
   }
   _syncFullscreen() {
     const btn = this.root.querySelector('.cm-fullscreen');
     if (!btn) return;
     const active = !!document.fullscreenElement;
+    if (!active) navigator.keyboard?.unlock?.();
     btn.classList.toggle('is-fullscreen', active);
     const label = btn.querySelector('.cm-fs-label');
     if (label) label.textContent = active ? 'SALIR DE PANTALLA COMPLETA' : 'PANTALLA COMPLETA';
