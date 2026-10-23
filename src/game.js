@@ -133,6 +133,11 @@ export class Game {
     );
     this.camera.rotation.order = 'YXZ';
     this.scene.add(this.camera);
+    // La edición pública usa texturas procedurales sin lightmaps GoldSrc.
+    // Una luz ambiental fija evita caras negras en interiores y contraluces.
+    if (globalThis.__DEUSHIMA_PUBLIC__) {
+      this.scene.add(new THREE.AmbientLight(0xe8efff, 0.56));
+    }
 
     this.renderer = new THREE.WebGLRenderer({
       canvas,
@@ -459,7 +464,8 @@ export class Game {
   applyMapEnvironment(map) {
     const amb = map.ambient || {};
     // Cada mapa puede calibrar su exposición sin alterar los exteriores.
-    this.renderer.toneMappingExposure = Number.isFinite(amb.exposure) ? amb.exposure : 1.18;
+    const baseExposure = globalThis.__DEUSHIMA_PUBLIC__ ? 1.3 : 1.18;
+    this.renderer.toneMappingExposure = Number.isFinite(amb.exposure) ? amb.exposure : baseExposure;
     this.scene.background = new THREE.Color(amb.skyBottom || 0x8aa0a8);
     this.scene.fog = new THREE.Fog(
       amb.fog ?? 0x9a8d6e,
